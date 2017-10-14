@@ -1,0 +1,26 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package ru.ezhov.regularexpression.listeners;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import ru.ezhov.regularexpression.TreatmentHotKey;
+import ru.ezhov.regularexpression.frame.SingletonJFrameHelper;
+
+/**
+ *
+ * @author RRNDeonisiusEZH
+ */
+public class ListenerListHelperMouse extends MouseAdapter {
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        new TreatmentHotKey().getTextFromList(SingletonJFrameHelper.getInstance().getListHelper());
+        SingletonJFrameHelper.getInstance().setVisible(false);
+    }
+    
+}
