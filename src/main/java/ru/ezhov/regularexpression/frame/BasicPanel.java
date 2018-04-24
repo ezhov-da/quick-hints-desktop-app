@@ -1,199 +1,113 @@
 package ru.ezhov.regularexpression.frame;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import ru.ezhov.regularexpression.SettingsApplication;
 import ru.ezhov.regularexpression.listeners.ListenerButtonAdd;
-import ru.ezhov.regularexpression.listeners.ListenerButtonCorrect;
 import ru.ezhov.regularexpression.listeners.ListenerList;
+import ru.ezhov.regularexpression.listeners.ListenerListHelperKey;
+import ru.ezhov.regularexpression.listeners.ListenerTextFieldSearch;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 /**
- *
  * @author RRNDeonisiusEZH
  */
-public class BasicPanel extends JPanel{
-private  JLabel pattern;
-private  JLabel version;
-private BasicButton hide;
-private BasicButton add;
-private BasicButton correct;
-private JList list;    
-private JScrollPane scrollPane;
-/**
- * @deprecated 
- */
-private JLabel info;
+public class BasicPanel extends JPanel {
+    private BasicButton add;
+    private JList list;
+    private JScrollPane scrollPane;
+    private ExtendsJTextField textFieldSearch;
+
+    private LookAndDeletePanel lookAndDeletePanel;
 
 
     public BasicPanel() {
         init();
     }
-    
-    
-    private void init(){
-            setLayout(new GridBagLayout());
-            setBorder(BorderFactory.createLineBorder(Color.black));
-            setBackground(SettingsFrame.PANEL_BASIC_COLOR);
-            setCursor(new  Cursor(Cursor.HAND_CURSOR));
-            
-            /*initial varible*/
-            version = new JLabel(SettingsApplication.APP_VERSION);
-            hide = new BasicButton(SettingsFrame.HIDE);
-            add = new BasicButton("add");
-            correct = new BasicButton("correct");            
-            list = new JList();
-            scrollPane = new JScrollPane();
-            scrollPane.setViewportView(list);
-            scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-            info = new JLabel("");
-            pattern = new JLabel(" pattern for replace ---> " + SettingsApplication.PATTERN_REPLACE);
-            /*set background*/
-            hide.setBackground(SettingsFrame.BUTTON_BASIC_COLOR);
-            add.setBackground(SettingsFrame.BUTTON_BASIC_COLOR);
-            correct.setBackground(SettingsFrame.BUTTON_BASIC_COLOR);
-            version.setBackground(SettingsFrame.PANEL_BASIC_COLOR);
-            
-            /*set font*/
-            add.setFont(SettingsFrame.BUTTON_BASIC_FONT);
-            correct.setFont(SettingsFrame.BUTTON_BASIC_FONT);
-            add.setForeground(SettingsFrame.BUTTON_BASIC_FOREGROUND);
-            correct.setForeground(SettingsFrame.BUTTON_BASIC_FOREGROUND);
-            list.setFont(SettingsFrame.LIST_BASIC_FONT);
-            info.setFont(SettingsFrame.LIST_BASIC_FONT);
-            info.setForeground(SettingsFrame.BUTTON_BASIC_FOREGROUND);
-            pattern.setFont(SettingsFrame.LIST_BASIC_FONT);
-            pattern.setForeground(SettingsFrame.BUTTON_BASIC_FOREGROUND);
-            version.setFont(SettingsFrame.LIST_BASIC_FONT);
-            version.setForeground(SettingsFrame.BUTTON_BASIC_FOREGROUND);
-            
+
+
+    private void init() {
+
+        lookAndDeletePanel = new LookAndDeletePanel();
+
+        setLayout(new BorderLayout());
+
+        add = new BasicButton("add");
+        list = new JList();
+
+
             /*set size*/
-            Dimension dimensionHide = new Dimension(25, 25);
-            hide.setPreferredSize(dimensionHide);
-            hide.setMaximumSize(dimensionHide);
-            hide.setMinimumSize(dimensionHide);
-            
-            
-            list.setModel(new DefaultListModel());
+        Dimension dimensionHide = new Dimension(25, 25);
+
+
+        list.setModel(new DefaultListModel());
             /*add listener*/
-                hide.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseReleased(MouseEvent e) {
-                                SingletonBasicWindow.getInstance().setVisible(false);
-                    }
-                });
-            
-            add.addMouseListener(new ListenerButtonAdd());
-            correct.addMouseListener(new ListenerButtonCorrect());
-            list.addListSelectionListener(new ListenerList());
-            list.addMouseListener(new ListenerList());
-            
-            
-                                    /*set aligment*/
-                                    GridBagConstraints constraints = new GridBagConstraints();
 
-                                    constraints.anchor = GridBagConstraints.ABOVE_BASELINE_LEADING;
-                                    constraints.gridx = 1;
-                                    constraints.gridy = 1;
-                                    constraints.weightx = 0;
-                                    constraints.weighty = 0;
-                                    constraints.insets = SettingsFrame.INSETS_COMPONENT; 
-                                    add(version,constraints);                                    
-                                    
-                                    constraints.anchor = GridBagConstraints.CENTER;
-                                    constraints.gridx = 1;
-                                    constraints.gridy = 1;
-                                    constraints.weightx = 1;
-                                    constraints.weighty = 0;
-                                    constraints.insets = SettingsFrame.INSETS_COMPONENT; 
-                                    add(pattern,constraints);
-                                    
-                                    constraints.anchor = GridBagConstraints.NORTHEAST;
-                                    constraints.gridx = 1;
-                                    constraints.gridy = 1;
-                                    constraints.weightx = 0;
-                                    constraints.weighty = 0;
-                                    constraints.insets = SettingsFrame.INSETS_COMPONENT; 
-                                    add(hide,constraints);
+        add.addMouseListener(new ListenerButtonAdd());
+        list.addListSelectionListener(new ListenerList(lookAndDeletePanel));
+        list.addMouseListener(new ListenerList(lookAndDeletePanel));
 
-                                    constraints.anchor = GridBagConstraints.NORTH;
-                                    constraints.fill = GridBagConstraints.HORIZONTAL;
-                                    constraints.gridx = 1;
-                                    constraints.gridy = 2;
-                                    constraints.weightx = 1;
-                                    constraints.weighty = 0;
-                                    constraints.gridwidth = GridBagConstraints.REMAINDER;
-                                    constraints.insets = SettingsFrame.INSETS_COMPONENT;
-                                    add(add,constraints);
+        JPanel panelCenter = new JPanel(new BorderLayout());
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
-                                    constraints.anchor = GridBagConstraints.NORTH;
-                                    constraints.fill = GridBagConstraints.BOTH;
-                                    constraints.gridx = 1;
-                                    constraints.gridy = 3;
-                                    constraints.weightx = 1;
-                                    constraints.weighty = 1;
-                                    constraints.gridwidth = GridBagConstraints.REMAINDER;
-                                    constraints.insets = SettingsFrame.INSETS_COMPONENT;
-                                    add(scrollPane,constraints);
+        JPanel panelList = new JPanel(new BorderLayout());
 
-                                    constraints.gridx = 1;
-                                    constraints.gridy = 4;
-                                    constraints.gridwidth = GridBagConstraints.REMAINDER;
-                                    constraints.weightx = 1;
-                                    constraints.weighty = 0;
-                                    constraints.anchor = GridBagConstraints.SOUTH;
-                                    constraints.fill = GridBagConstraints.HORIZONTAL;
-                                    constraints.insets = SettingsFrame.INSETS_COMPONENT;
-                                    add(correct,constraints);
-                                    
-                                    constraints.anchor = GridBagConstraints.SOUTH;
-                                    constraints.fill = GridBagConstraints.HORIZONTAL;
-                                    constraints.gridx = 1;
-                                    constraints.gridy = 5;
-                                    constraints.weightx = 1;
-                                    constraints.weighty = 0;
-                                    constraints.gridwidth = GridBagConstraints.REMAINDER;
-                                    constraints.insets = SettingsFrame.INSETS_COMPONENT;
-                                    add(info,constraints);
-                                    
+        textFieldSearch = new ExtendsJTextField("Начните вводить текст для поиска...");
+        panelList.add(textFieldSearch, BorderLayout.NORTH);
+        panelList.add(new JScrollPane(list), BorderLayout.CENTER);
+        JPanel panelButtonAdd = new JPanel();
+        panelButtonAdd.add(add);
+        panelList.add(panelButtonAdd, BorderLayout.SOUTH);
+
+        splitPane.setLeftComponent(panelList);
+        splitPane.setRightComponent(lookAndDeletePanel);
+        splitPane.setResizeWeight(0.2);
+        splitPane.setDividerLocation(0.2);
+
+        panelCenter.add(splitPane, BorderLayout.CENTER);
+
+        add(panelCenter, BorderLayout.CENTER);
+
+        setListeners();
     }
 
-    public BasicButton getHide() {
-        return hide;
-    }
+    private void setListeners() {
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    JFrameHelper frameHelper = (JFrameHelper) e.getSource();
+                    frameHelper.setVisible(false);
+                }
+            }
+        });
 
+        textFieldSearch.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    SingletonBasicWindow.getInstance().setVisible(false);
+                }
+            }
+        });
+
+        textFieldSearch.addCaretListener(new ListenerTextFieldSearch());
+        list.addKeyListener(new ListenerListHelperKey());
+    }
 
     public BasicButton getAdd() {
         return add;
-    }
-
-    public BasicButton getCorrect() {
-        return correct;
     }
 
     public JList getList() {
         return list;
     }
 
-    public JLabel getInfo() {
-        return info;
-    }
-
     public JScrollPane getScrollPane() {
         return scrollPane;
     }
-    
-    
-    
+
+
 }

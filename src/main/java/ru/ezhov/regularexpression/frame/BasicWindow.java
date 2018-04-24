@@ -6,29 +6,38 @@
 
 package ru.ezhov.regularexpression.frame;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import javax.swing.JFrame;
+import ru.ezhov.regularexpression.SettingsApplication;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 /**
- *
  * @author RRNDeonisiusEZH
  */
 public class BasicWindow extends JFrame {
-public static final int WIDTH_MY = 300;
-public static final int HEIGHT_MY = 650;
-    
-    
-    public BasicWindow() {
-        initComponents();
-    }
-    
-    private void initComponents(){
-                setSize(new Dimension(WIDTH_MY,HEIGHT_MY));
-                setLayout(new BorderLayout());
-                setIconImage(SettingsFrame.TRAY_ICON);
-                setTitle("fast paste");
-                setUndecorated(true);
-                setAlwaysOnTop(true);
-    }
+	public BasicWindow() {
+		initComponents();
+	}
+
+	private void initComponents() {
+		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+		setSize(
+			new Dimension(
+				dimension.width * 70 / 100,
+				dimension.height * 70 / 100
+			)
+		);
+		setLayout(new BorderLayout());
+		setIconImage(SettingsFrame.TRAY_ICON);
+		setTitle("fast paste [" + SettingsApplication.APP_VERSION + "]");
+		addWindowStateListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				setVisible(false);
+			}
+		});
+		setAlwaysOnTop(true);
+		setLocationRelativeTo(null);
+	}
 }

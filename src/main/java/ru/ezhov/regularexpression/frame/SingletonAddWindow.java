@@ -7,17 +7,19 @@
 package ru.ezhov.regularexpression.frame;
 
 /**
- *
  * @author RRNDeonisiusEZH
  */
 public class SingletonAddWindow {
-        private static AddWindow addWindow;
-        
-        private SingletonAddWindow(){}
-        
-        public static AddWindow getInstance(){
-            if (addWindow==null) addWindow = new AddWindow(SingletonBasicWindow.getInstance());
-            
-            return addWindow;
+    private static AddWindow addWindow;
+
+    private SingletonAddWindow() {
+    }
+
+    public static AddWindow getInstance() {
+        if (addWindow == null) {
+            addWindow = new AddWindow(SingletonBasicWindow.getInstance());
         }
+
+        return addWindow;
+    }
 }

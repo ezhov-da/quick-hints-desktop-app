@@ -1,17 +1,17 @@
 package ru.ezhov.regularexpression.frame;
 
 /**
- *
  * @author RRNDeonisiusEZH
  */
 public class SingletonCorrectWindow {
-        private static CorrectWindow correctWindow;
-        
-        private SingletonCorrectWindow(){}
-        
-        public static CorrectWindow getInstance(){
-            if (correctWindow==null) correctWindow = new CorrectWindow(SingletonBasicWindow.getInstance());
-            
-            return correctWindow;
-        }
+	private static EditWindow editWindow;
+
+	private SingletonCorrectWindow() {
+	}
+
+	public static EditWindow getInstance() {
+		if (editWindow == null) editWindow = new EditWindow(SingletonBasicWindow.getInstance());
+
+		return editWindow;
+	}
 }

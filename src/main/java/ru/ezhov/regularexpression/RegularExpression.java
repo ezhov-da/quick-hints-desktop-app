@@ -1,34 +1,22 @@
 package ru.ezhov.regularexpression;
 
-import java.awt.AWTException;
-
-import ru.ezhov.regularexpression.frame.SingletonBasicWindow;
-
-import java.awt.BorderLayout;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
-import javax.swing.SwingUtilities;
-
 import ru.ezhov.regularexpression.connection.Querys;
 import ru.ezhov.regularexpression.frame.BasicWindow;
 import ru.ezhov.regularexpression.frame.SingletonBasicPanel;
+import ru.ezhov.regularexpression.frame.SingletonBasicWindow;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 
-/**
- * @author RRNDeonisiusEZH
- */
 public class RegularExpression {
     private static final Logger logger = Logger.getLogger(RegularExpression.class.getName());
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-
-
         try {
             LogManager.getLogManager().readConfiguration(
                     RegularExpression.class.getResourceAsStream("/log.properties")
@@ -42,19 +30,19 @@ public class RegularExpression {
         logger.log(Level.INFO, "run application");
 
         try {
-                        /*set look and feel*/
             LookAndFeel.setLookAndFeel();
+            setUIFont(new javax.swing.plaf.FontUIResource("Courier New", Font.PLAIN, 11));
 
             try {
                 SwingUtilities.invokeAndWait(new Runnable() {
-
-                    @Override
                     public void run() {
                         BasicWindow window = SingletonBasicWindow.getInstance();
                         window.setLayout(new BorderLayout());
                         window.getContentPane().add(SingletonBasicPanel.getInstance(), BorderLayout.CENTER);
                         new TreatmentData().select(Querys.SELECT);
 
+
+                        window.setVisible(true);
                         try {
                             new RunApplicationTray().runTray();
                         } catch (AWTException ex) {
@@ -62,14 +50,21 @@ public class RegularExpression {
                         }
                     }
                 });
-            } catch (InterruptedException ex) {
-                logger.log(Level.WARNING, null, ex);
-            } catch (InvocationTargetException ex) {
+            } catch (Exception ex) {
                 logger.log(Level.WARNING, null, ex);
             }
         } catch (Exception ex) {
-            /*this exception wtrite file if i not catch special exception*/
             logger.log(Level.WARNING, null, ex);
+        }
+    }
+
+    public static void setUIFont(javax.swing.plaf.FontUIResource f) {
+        java.util.Enumeration keys = UIManager.getDefaults().keys();
+        while (keys.hasMoreElements()) {
+            Object key = keys.nextElement();
+            Object value = UIManager.get(key);
+            if (value instanceof javax.swing.plaf.FontUIResource)
+                UIManager.put(key, f);
         }
     }
 }

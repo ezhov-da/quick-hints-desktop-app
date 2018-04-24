@@ -7,19 +7,17 @@
 package ru.ezhov.regularexpression.frame;
 
 
-
 /**
- *
  * @author RRNDeonisiusEZH
  */
 public class SingletonBasicWindow {
-            private static BasicWindow basicWindow;
-            
-            private SingletonBasicWindow(){}
-            
-            public static BasicWindow getInstance(){
-                    if (basicWindow==null) basicWindow = new BasicWindow();
-                return basicWindow;
-                
-            }
+	private static BasicWindow basicWindow;
+
+	private SingletonBasicWindow() {
+	}
+
+	public static BasicWindow getInstance() {
+		if (basicWindow == null) basicWindow = new BasicWindow();
+		return basicWindow;
+	}
 }

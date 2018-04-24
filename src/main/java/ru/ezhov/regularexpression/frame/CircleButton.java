@@ -6,17 +6,11 @@
 
 package ru.ezhov.regularexpression.frame;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import javax.swing.Icon;
-import javax.swing.JButton;
+import javax.swing.*;
 
 /**
- *
  * @author RRNDeonisiusEZH
  */
 public class CircleButton extends JButton {
-   
-    
-   
+
 }

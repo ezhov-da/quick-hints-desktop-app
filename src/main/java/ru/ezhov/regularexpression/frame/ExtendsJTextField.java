@@ -6,26 +6,27 @@
 
 package ru.ezhov.regularexpression.frame;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import javax.swing.JTextField;
+import javax.swing.*;
+import java.awt.*;
 
 /**
- *
  * @author RRNDeonisiusEZH
  */
 public class ExtendsJTextField extends JTextField {
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g); //To change body of generated methods, choose Tools | Templates.
-        Graphics2D graphics2D = (Graphics2D) g;
-        graphics2D.setFont(SettingsFrame.LIST_BASIC_FONT);
-        if (getText().length() == 0){
-            graphics2D.setPaint(Color.GRAY);
-            graphics2D.drawString("Начните вводить текст для поиска...", 8, 15);
-        }
-    }
-    
+	private String text;
+
+	public ExtendsJTextField(String text) {
+		this.text = text;
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g); //To change body of generated methods, choose Tools | Templates.
+		Graphics2D graphics2D = (Graphics2D) g;
+		if (getText().length() == 0) {
+			graphics2D.setPaint(Color.GRAY);
+			graphics2D.drawString(text, 8, 15);
+		}
+	}
 }

@@ -6,41 +6,36 @@
 
 package ru.ezhov.regularexpression;
 
+import ru.ezhov.regularexpression.frame.*;
+
+import javax.swing.*;
 import java.util.Vector;
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.SwingUtilities;
-import ru.ezhov.regularexpression.frame.BasicPanel;
-import ru.ezhov.regularexpression.frame.SingletonBasicPanel;
 
 /**
- *
  * @author RRNDeonisiusEZH
  */
 public class TreatmentList {
-                public static void setList(final Vector<ApplicationObject> vector){
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            BasicPanel basicPanel = SingletonBasicPanel.getInstance();
-                            JList list = basicPanel.getList();
-                            DefaultListModel defaultListModel = (DefaultListModel)list.getModel();
-                            for (ApplicationObject applicationObject : vector){
-                                defaultListModel.addElement(applicationObject);
-                            }
-                        }
-                    });
-                }
-                
-                public static void clearList(){
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {                    
-                            BasicPanel basicPanel = SingletonBasicPanel.getInstance();
-                            JList list = basicPanel.getList();
-                            DefaultListModel defaultListModel = (DefaultListModel)list.getModel();
-                            defaultListModel.removeAllElements();
-                        }
-                    });                            
-                }                
+	public static void setList(final Vector<ApplicationObject> vector) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				BasicPanel basicPanel = SingletonBasicPanel.getInstance();
+				JList list = basicPanel.getList();
+				DefaultListModel defaultListModel = (DefaultListModel) list.getModel();
+				for (ApplicationObject applicationObject : vector) {
+					defaultListModel.addElement(applicationObject);
+				}
+			}
+		});
+	}
+
+	public static void clearList() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				BasicPanel basicPanel = SingletonBasicPanel.getInstance();
+				JList list = basicPanel.getList();
+				DefaultListModel defaultListModel = (DefaultListModel) list.getModel();
+				defaultListModel.removeAllElements();
+			}
+		});
+	}
 }

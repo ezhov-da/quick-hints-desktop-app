@@ -6,22 +6,20 @@
 
 package ru.ezhov.regularexpression.frame;
 
-import javax.swing.Icon;
-import javax.swing.JButton;
+import javax.swing.*;
 
 /**
- *
  * @author RRNDeonisiusEZH
  */
 public class BasicButton extends JButton {
 
-    public BasicButton(String text) {
-        super(text);
-    }
+	public BasicButton(String text) {
+		super(text);
+	}
 
-    public BasicButton(Icon icon) {
-        super(icon);
-    }
-    
-    
+	public BasicButton(Icon icon) {
+		super(icon);
+	}
+
+
 }
