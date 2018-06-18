@@ -10,15 +10,15 @@ package ru.ezhov.regularexpression.frame;
  * @author RRNDeonisiusEZH
  */
 public class SingletonJFrameHelper {
-	private static JFrameHelper frameHelper;
+    private static JFrameHelper frameHelper;
 
-	private SingletonJFrameHelper() {
-	}
+    private SingletonJFrameHelper() {
+    }
 
-	public static JFrameHelper getInstance() {
-		if (frameHelper == null) {
-			frameHelper = new JFrameHelper();
-		}
-		return frameHelper;
-	}
+    public static JFrameHelper getInstance() {
+        if (frameHelper == null) {
+            frameHelper = new JFrameHelper();
+        }
+        return frameHelper;
+    }
 }

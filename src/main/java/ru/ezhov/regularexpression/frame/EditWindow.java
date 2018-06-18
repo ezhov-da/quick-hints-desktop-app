@@ -16,8 +16,6 @@ import java.awt.*;
  * @author RRNDeonisiusEZH
  */
 public class EditWindow extends JDialog {
-    public static final int MINUS_HEIGTH = 3;
-    public static final int SIZE_HEIGTH = 248;
     private JComboBox<String> comboBox;
     private JPanel panel;
     private JTextField comment;

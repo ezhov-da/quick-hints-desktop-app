@@ -6,10 +6,15 @@
 
 package ru.ezhov.regularexpression.listeners;
 
-import ru.ezhov.regularexpression.TreatmentData;
+import ru.ezhov.regularexpression.domain.AddHintException;
+import ru.ezhov.regularexpression.domain.Hints;
+import ru.ezhov.regularexpression.domain.NewHint;
 import ru.ezhov.regularexpression.frame.SingletonAddWindow;
+import ru.ezhov.regularexpression.frame.SingletonBasicPanel;
 
-import java.awt.event.*;
+import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 /**
@@ -17,14 +22,25 @@ import java.awt.event.*;
  */
 public class ListenerButtonAddExpression extends MouseAdapter {
 
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		if (ListenerChangeText.isWrong()) return;
-		String text = SingletonAddWindow.getInstance().getText().getText();
-		String comment = SingletonAddWindow.getInstance().getComment().getText();
-		TreatmentData treatmentData = new TreatmentData();
-		treatmentData.insert(text, comment);
-	}
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        if (ListenerChangeText.isWrong()) return;
+        String text = SingletonAddWindow.getInstance().getText().getText();
+        String comment = SingletonAddWindow.getInstance().getComment().getText();
+        Hints hints = new Hints();
+        try {
+            hints.add(new NewHint(text, comment));
+            SingletonBasicPanel.getInstance().reloadList();
+            SingletonAddWindow.getInstance().setVisible(false);
+        } catch (AddHintException e1) {
+            e1.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "При добавлении подсказки возникла ошибка",
+                    "Ошибка добавления подсказки",
+                    JOptionPane.WARNING_MESSAGE
+            );
+        }
+    }
 
 }

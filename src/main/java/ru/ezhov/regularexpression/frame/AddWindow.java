@@ -16,7 +16,6 @@ public class AddWindow extends JDialog {
     private JScrollPane scrollPane;
     private BasicButton basicButtonAdd;
 
-
     public AddWindow(JFrame frame) {
         super(frame);
         init();

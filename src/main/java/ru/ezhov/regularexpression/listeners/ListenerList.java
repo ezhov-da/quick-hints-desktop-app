@@ -1,40 +1,42 @@
 package ru.ezhov.regularexpression.listeners;
 
-import ru.ezhov.regularexpression.*;
-import ru.ezhov.regularexpression.frame.*;
+import ru.ezhov.regularexpression.FillText;
+import ru.ezhov.regularexpression.frame.LookAndDeletePanel;
+import ru.ezhov.regularexpression.frame.SingletonBasicPanel;
 
 import javax.swing.*;
-import javax.swing.event.*;
-import java.awt.event.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * @author RRNDeonisiusEZH
  */
 public class ListenerList extends MouseAdapter implements ListSelectionListener {
 
-	private LookAndDeletePanel lookAndDeletePanel;
+    private LookAndDeletePanel lookAndDeletePanel;
 
-	public ListenerList(LookAndDeletePanel lookAndDeletePanel) {
-		this.lookAndDeletePanel = lookAndDeletePanel;
-	}
+    public ListenerList(LookAndDeletePanel lookAndDeletePanel) {
+        this.lookAndDeletePanel = lookAndDeletePanel;
+    }
 
-	@Override
-	public void mouseReleased(MouseEvent e) {
+    @Override
+    public void mouseReleased(MouseEvent e) {
 //		if (e.getButton() == MouseEvent.BUTTON3) {
 //			if (flagClick) return;
 //			showDetailWindow(e);
 //		} else if (e.getButton() == MouseEvent.BUTTON1) {
 //			new TreatmentHotKey().getTextFromList(SingletonBasicPanel.getInstance().getList());
 //		}
-	}
+    }
 
-	@Override
-	public void valueChanged(ListSelectionEvent e) {
-		TreatmentCorrectExpression.refresh();
-		JList list = SingletonBasicPanel.getInstance().getList();
-		int index = list.getSelectedIndex();
-		FillText.fillText(index, lookAndDeletePanel);
-	}
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        JList list = SingletonBasicPanel.getInstance().getList();
+        int index = list.getSelectedIndex();
+        FillText.fillText(index, lookAndDeletePanel);
+    }
 }
 
 

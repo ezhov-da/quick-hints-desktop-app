@@ -11,13 +11,13 @@ package ru.ezhov.regularexpression.frame;
  * @author RRNDeonisiusEZH
  */
 public class SingletonBasicPanel {
-	private static BasicPanel basicPanel;
+    private static BasicPanel basicPanel;
 
-	private SingletonBasicPanel() {
-	}
+    private SingletonBasicPanel() {
+    }
 
-	public static BasicPanel getInstance() {
-		if (basicPanel == null) basicPanel = new BasicPanel();
-		return basicPanel;
-	}
+    public static BasicPanel getInstance() {
+        if (basicPanel == null) basicPanel = new BasicPanel();
+        return basicPanel;
+    }
 }

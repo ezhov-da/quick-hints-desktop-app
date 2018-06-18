@@ -6,26 +6,17 @@
 
 package ru.ezhov.regularexpression.listeners;
 
-import ru.ezhov.regularexpression.TreatmentData;
-import ru.ezhov.regularexpression.connection.Querys;
-import ru.ezhov.regularexpression.frame.ExtendsJTextField;
+import ru.ezhov.regularexpression.frame.SingletonBasicPanel;
+import ru.ezhov.regularexpression.frame.TextFieldWithText;
 
-import javax.swing.event.*;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 
-/**
- * @author RRNDeonisiusEZH
- */
 public class ListenerTextFieldSearch implements CaretListener {
-	@Override
-	public void caretUpdate(CaretEvent e) {
-		ExtendsJTextField extendsJTextField = (ExtendsJTextField) e.getSource();
-		String text = extendsJTextField.getText();
-		if (text.length() > 0) {
-			text = Querys.SELECT_SEARCH.replace("-", text.toUpperCase());
-		} else {
-			text = Querys.SELECT_SEARCH.replace("-", "");
-		}
-
-		new TreatmentData().select(text);
-	}
+    @Override
+    public void caretUpdate(CaretEvent e) {
+        TextFieldWithText textFieldWithText = (TextFieldWithText) e.getSource();
+        String text = textFieldWithText.getText();
+        SingletonBasicPanel.getInstance().reloadListWithCondition(text);
+    }
 }

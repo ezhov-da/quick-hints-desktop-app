@@ -115,7 +115,7 @@ public class LookAndDeletePanel extends JPanel {
             panelTextField.setLayout(new GridLayout(words.size(), 1));
 
             for (String s : words) {
-                JTextField textField = new ExtendsJTextField(s);
+                JTextField textField = new TextFieldWithText(s);
                 map.put(s, textField);
                 panelTextField.add(textField);
             }

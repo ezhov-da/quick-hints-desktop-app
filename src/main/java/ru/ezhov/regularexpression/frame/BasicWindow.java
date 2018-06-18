@@ -10,34 +10,35 @@ import ru.ezhov.regularexpression.SettingsApplication;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * @author RRNDeonisiusEZH
  */
 public class BasicWindow extends JFrame {
-	public BasicWindow() {
-		initComponents();
-	}
+    public BasicWindow() {
+        initComponents();
+    }
 
-	private void initComponents() {
-		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-		setSize(
-			new Dimension(
-				dimension.width * 70 / 100,
-				dimension.height * 70 / 100
-			)
-		);
-		setLayout(new BorderLayout());
-		setIconImage(SettingsFrame.TRAY_ICON);
-		setTitle("fast paste [" + SettingsApplication.APP_VERSION + "]");
-		addWindowStateListener(new WindowAdapter() {
-			@Override
-			public void windowClosed(WindowEvent e) {
-				setVisible(false);
-			}
-		});
-		setAlwaysOnTop(true);
-		setLocationRelativeTo(null);
-	}
+    private void initComponents() {
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        setSize(
+                new Dimension(
+                        dimension.width * 70 / 100,
+                        dimension.height * 70 / 100
+                )
+        );
+        setLayout(new BorderLayout());
+        setIconImage(SettingsFrame.TRAY_ICON);
+        setTitle("fast paste [" + SettingsApplication.APP_VERSION + "]");
+        addWindowStateListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                setVisible(false);
+            }
+        });
+        setAlwaysOnTop(true);
+        setLocationRelativeTo(null);
+    }
 }

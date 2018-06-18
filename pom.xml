@@ -68,7 +68,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <mainClass>
-                                ru.ezhov.regularexpression.RegularExpression
+                                ru.ezhov.regularexpression.AppHints
                             </mainClass>
                             <classpathPrefix>
                                 ${directory.extended.library}/

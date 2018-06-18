@@ -11,7 +11,7 @@ public class VelocityEngineImplTest {
 	@Test
 	public void words() throws Exception {
 
-		Engine engine = new VelocityEngineImpl("select * from 0_0 where id = \n" +
+		Engine engine = new VelocityEngineImpl("all * from 0_0 where id = \n" +
 			"\n" +
 			"$hello\n" +
 			"\n" +
