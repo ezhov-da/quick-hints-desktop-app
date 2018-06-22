@@ -68,8 +68,9 @@ public class RunApplicationTray {
                     BasicWindow frame = SingletonBasicWindow.getInstance();
                     frame.setVisible(true);
                 } else {
-                    int key = hotkey.keyStroke.getKeyCode() - 96;
-                    treatmentHotKey.getTextHotKey(key);
+                    //TODO: сделать
+//                    int key = hotkey.keyStroke.getKeyCode() - 96;
+//                    treatmentHotKey.getTextHotKey(key);
                 }
             }
         };

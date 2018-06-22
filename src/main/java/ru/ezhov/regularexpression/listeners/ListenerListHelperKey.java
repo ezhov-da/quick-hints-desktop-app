@@ -7,6 +7,7 @@
 package ru.ezhov.regularexpression.listeners;
 
 import ru.ezhov.regularexpression.TreatmentHotKey;
+import ru.ezhov.regularexpression.domain.Hint;
 import ru.ezhov.regularexpression.frame.SingletonBasicPanel;
 import ru.ezhov.regularexpression.frame.SingletonBasicWindow;
 
@@ -28,8 +29,11 @@ public class ListenerListHelperKey extends KeyAdapter {
                 break;
 
             case KeyEvent.VK_ENTER:
-                new TreatmentHotKey().getTextFromList(SingletonBasicPanel.getInstance().getList());
-                SingletonBasicWindow.getInstance().setVisible(false);
+                Hint hint = (Hint) SingletonBasicPanel.getInstance().getList().getSelectedValue();
+                if (hint != null) {
+                    new TreatmentHotKey().getTextFromList(hint);
+                    SingletonBasicWindow.getInstance().setVisible(false);
+                }
                 break;
 
             case KeyEvent.VK_UP:
