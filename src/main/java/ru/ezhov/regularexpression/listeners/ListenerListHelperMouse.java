@@ -19,8 +19,8 @@ public class ListenerListHelperMouse extends MouseAdapter {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        new TreatmentHotKey().getTextFromList(SingletonJFrameHelper.getInstance().getListHelper());
-        SingletonJFrameHelper.getInstance().setVisible(false);
+//        new TreatmentHotKey().getTextFromList(SingletonJFrameHelper.getInstance().getListHelper());
+//        SingletonJFrameHelper.getInstance().setVisible(false);
     }
 
 }
