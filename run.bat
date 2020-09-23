@@ -1,1 +1,1 @@
-start "run" "%JAVA_HOME%\bin\javaw" -jar -Xmx768m "quick-hints-desktop.jar"
+start "run" "%JAVA_HOME%\bin\javaw" -jar -Xmx768m "notes-desktop.jar"
