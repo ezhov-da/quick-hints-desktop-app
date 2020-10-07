@@ -1,24 +1,27 @@
 package ru.ezhov.notes.ui;
 
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import ru.ezhov.notes.config.ApplicationConfiguration;
 import ru.ezhov.notes.domain.Hint;
 import ru.ezhov.notes.domain.HintRepository;
 import ru.ezhov.notes.template.domain.Engine;
 import ru.ezhov.notes.template.ui.swing.PanelEngine;
+import ru.ezhov.notes.ui.terminal.TerminalPanel;
 import ru.ezhov.notes.ui.editor.EditWindow;
 import ru.ezhov.notes.ui.event.infrastructure.UiEventPublisherFactory;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -30,6 +33,9 @@ import javax.swing.SwingWorker;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.MalformedURLException;
@@ -48,6 +54,8 @@ public class HintViewPanel extends JPanel {
     private JTabbedPane tabbedPane = new JTabbedPane();
     private String finalText = "";
     private HintRepository hintRepository;
+
+    private TerminalPanel terminalPanel;
 
     public HintViewPanel(HintRepository hintRepository, Engine engine, Hint hint) {
         this.engine = engine;
@@ -114,7 +122,38 @@ public class HintViewPanel extends JPanel {
         RTextScrollPane sp = new RTextScrollPane(textArea);
         textArea.setEditable(false);
 
+        textArea.getPopupMenu().add(new JMenuItem(new AbstractAction() {
+            {
+                putValue(Action.NAME, "Add and execute to terminal");
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                terminalPanel.setCommandAndExecute(textArea.getSelectedText());
+            }
+        }));
+        textArea.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    terminalPanel.setCommandAndExecute(textArea.getSelectedText());
+                }
+            }
+        });
+
+        String type;
+        switch (hint.type()) {
+            case URL:
+                type = hint.text().value();
+                break;
+            default:
+                type = hint.type().name();
+        }
+
+        JLabel labelSource = new JLabel("Source: " + type);
+
         panel.add(sp, BorderLayout.CENTER);
+        panel.add(labelSource, BorderLayout.SOUTH);
 
         tabbedPane.add("origin", panel);
         add(toolBar, BorderLayout.NORTH);
@@ -125,8 +164,19 @@ public class HintViewPanel extends JPanel {
         }
         panelCenter.add(tabbedPane, BorderLayout.CENTER);
 
-        add(panelCenter, BorderLayout.CENTER);
 
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        splitPane.setTopComponent(panelCenter);
+
+
+        terminalPanel = new TerminalPanel(ApplicationConfiguration.shellExecuteCommand());
+
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.addTab("Terminal", terminalPanel);
+
+        splitPane.setBottomComponent(tabbedPane);
+
+        add(splitPane, BorderLayout.CENTER);
 
         this.revalidate();
     }
@@ -174,17 +224,35 @@ public class HintViewPanel extends JPanel {
     }
 
     private class ApplyPanel extends JPanel {
-
         private final RSyntaxTextArea textPane;
 
         public ApplyPanel(String text) {
             setLayout(new BorderLayout());
-
             textPane = new RSyntaxTextArea();
             textPane.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
             textPane.setCodeFoldingEnabled(true);
             RTextScrollPane sp = new RTextScrollPane(textPane);
             textPane.setText(text);
+
+            textPane.getPopupMenu().add(new JMenuItem(new AbstractAction() {
+                {
+                    putValue(Action.NAME, "Add and execute to terminal");
+                }
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    terminalPanel.setCommandAndExecute(textPane.getSelectedText());
+                }
+            }));
+
+            textPane.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        terminalPanel.setCommandAndExecute(textPane.getSelectedText());
+                    }
+                }
+            });
 
             add(sp, BorderLayout.CENTER);
         }

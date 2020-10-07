@@ -1,6 +1,7 @@
 package ru.ezhov.notes;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import ru.ezhov.notes.config.ApplicationConfiguration;
 import ru.ezhov.notes.infrastructure.old.YamlHintRepository;
 import ru.ezhov.notes.template.infrastructure.VelocityEngineImpl;
 import ru.ezhov.notes.ui.BasicPanel;
@@ -21,13 +22,6 @@ public class AppHints {
     private static final Logger LOG = Logger.getLogger(AppHints.class.getName());
 
     public static void main(String[] args) {
-        String filePathRepository = System.getProperty("notes.file.repository", System.getenv("NOTES_FILE_REPOSITORY"));
-        if (filePathRepository == null) {
-            filePathRepository = System.getProperty("user.home") + File.separator + "notes.yml";
-
-            LOG.log(Level.INFO, "set storage as {0}", filePathRepository);
-        }
-
         try {
             LogManager.getLogManager().readConfiguration(
                     AppHints.class.getResourceAsStream("/log.properties")
@@ -40,7 +34,7 @@ public class AppHints {
         try {
             ru.ezhov.notes.util.LookAndFeel.setLookAndFeel();
             setUIFont(new javax.swing.plaf.FontUIResource(new RSyntaxTextArea().getFont()));
-            String finalFilePathRepository = filePathRepository;
+            String finalFilePathRepository = ApplicationConfiguration.filePathRepository();
             SwingUtilities.invokeAndWait(() -> {
                 BasicWindow window = SingletonBasicWindow.getInstance();
                 window.setLayout(new BorderLayout());
