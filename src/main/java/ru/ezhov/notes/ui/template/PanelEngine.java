@@ -1,4 +1,4 @@
-package ru.ezhov.notes.template.ui.swing;
+package ru.ezhov.notes.ui.template;
 
 import ru.ezhov.notes.ui.TextFieldWithText;
 
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PanelEngine extends JPanel {
+class PanelEngine extends JPanel {
     private List<String> words;
     private Map<String, JTextField> map = new HashMap<>();
 

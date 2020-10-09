@@ -10,8 +10,13 @@ import ru.ezhov.notes.config.ApplicationConfiguration;
 import ru.ezhov.notes.domain.Hint;
 import ru.ezhov.notes.domain.HintRepository;
 import ru.ezhov.notes.template.domain.Engine;
-import ru.ezhov.notes.template.ui.swing.PanelEngine;
-import ru.ezhov.notes.ui.terminal.TerminalPanel;
+import ru.ezhov.notes.ui.template.HintPanelEngine;
+import ru.ezhov.notes.ui.command.infrastructure.UiCommandFactory;
+import ru.ezhov.notes.ui.event.domain.UiEvent;
+import ru.ezhov.notes.ui.event.domain.UiEventSubscriber;
+import ru.ezhov.notes.ui.template.event.ExecutedWordsEngineUiEvent;
+import ru.ezhov.notes.ui.terminal.ExecuteTerminalUiCommand;
+import ru.ezhov.notes.ui.terminal.HintTerminalPanel;
 import ru.ezhov.notes.ui.editor.EditWindow;
 import ru.ezhov.notes.ui.event.infrastructure.UiEventPublisherFactory;
 
@@ -40,13 +45,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
-public class HintViewPanel extends JPanel {
-    private RSyntaxTextArea textArea;
-    private PanelEngine panelEngine;
+public class HintPanel extends JPanel {
+    private TextAreaPanel textAreaOriginal;
+    private HintPanelEngine panelEngine;
     private final Engine engine;
     private Hint hint;
     private final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -55,9 +60,9 @@ public class HintViewPanel extends JPanel {
     private String finalText = "";
     private HintRepository hintRepository;
 
-    private TerminalPanel terminalPanel;
+    private HintTerminalPanel terminalPanel;
 
-    public HintViewPanel(HintRepository hintRepository, Engine engine, Hint hint) {
+    public HintPanel(HintRepository hintRepository, Engine engine, Hint hint) {
         this.engine = engine;
         this.hint = hint;
         this.hintRepository = hintRepository;
@@ -115,31 +120,8 @@ public class HintViewPanel extends JPanel {
 
         JPanel panel = new JPanel(new BorderLayout());
 
-        textArea = new RSyntaxTextArea();
-        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
-        textArea.setCodeFoldingEnabled(true);
-        textArea.setText(finalText);
-        RTextScrollPane sp = new RTextScrollPane(textArea);
-        textArea.setEditable(false);
+        textAreaOriginal = new TextAreaPanel(hint.id(), finalText, false);
 
-        textArea.getPopupMenu().add(new JMenuItem(new AbstractAction() {
-            {
-                putValue(Action.NAME, "Add and execute to terminal");
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                terminalPanel.setCommandAndExecute(textArea.getSelectedText());
-            }
-        }));
-        textArea.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    terminalPanel.setCommandAndExecute(textArea.getSelectedText());
-                }
-            }
-        });
 
         String type;
         switch (hint.type()) {
@@ -152,7 +134,7 @@ public class HintViewPanel extends JPanel {
 
         JLabel labelSource = new JLabel("Source: " + type);
 
-        panel.add(sp, BorderLayout.CENTER);
+        panel.add(textAreaOriginal, BorderLayout.CENTER);
         panel.add(labelSource, BorderLayout.SOUTH);
 
         tabbedPane.add("origin", panel);
@@ -169,10 +151,11 @@ public class HintViewPanel extends JPanel {
         splitPane.setTopComponent(panelCenter);
 
 
-        terminalPanel = new TerminalPanel(ApplicationConfiguration.shellExecuteCommand());
+        terminalPanel = new HintTerminalPanel(hint.id(), ApplicationConfiguration.shellExecuteCommand());
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Terminal", terminalPanel);
+        tabbedPane.setTabComponentAt(0, new TabHeader("Terminal", tabbedPane, false));
 
         splitPane.setBottomComponent(tabbedPane);
 
@@ -186,79 +169,62 @@ public class HintViewPanel extends JPanel {
             remove(panelEngine);
             revalidate();
         }
-        panelEngine = new PanelEngine(words);
 
-        JPanel panel = new JPanel(new BorderLayout());
+        UiEventPublisherFactory.inMemory().register(new UiEventSubscriber() {
+            @Override
+            public void doOnEvent(UiEvent event) {
+                ExecutedWordsEngineUiEvent uiEvent = (ExecutedWordsEngineUiEvent) event;
+                if (uiEvent.hintId().equals(hint.id())) {
+                    SwingUtilities.invokeLater(() -> {
+                                final String textEngine = engine.apply(
+                                        HintPanel.this.textAreaOriginal.text(),
+                                        uiEvent.map()
+                                );
 
-        panel.add(panelEngine, BorderLayout.CENTER);
-        JButton button = new JButton("apply template");
-        JPanel panelButton = new JPanel();
-        panelButton.add(button);
-        panel.add(panelButton, BorderLayout.SOUTH);
-
-        button.addActionListener(e ->
-                SwingUtilities.invokeLater(() -> {
-                            final Map<String, String> stringStringMap = panelEngine.apply();
-
-                            final String textEngine = engine.apply(
-                                    HintViewPanel.this.textArea.getText(),
-                                    stringStringMap
-                            );
-
-                            final int index = tabbedPane.indexOfTab("apply");
-                            if (index == -1) {
-                                final ApplyPanel applyPanel = new ApplyPanel(textEngine);
-                                tabbedPane.addTab("apply", applyPanel);
-                                tabbedPane.setSelectedComponent(applyPanel);
-                            } else {
-                                ApplyPanel applyPanelFrom = (ApplyPanel) tabbedPane.getComponentAt(index);
-                                applyPanelFrom.setText(textEngine);
-                                tabbedPane.setSelectedIndex(index);
+                                final int index = tabbedPane.indexOfTab("apply");
+                                if (index == -1) {
+                                    final ApplyPanel applyPanel = new ApplyPanel(textEngine);
+                                    tabbedPane.addTab("apply", applyPanel);
+                                    tabbedPane.setSelectedComponent(applyPanel);
+                                } else {
+                                    tabbedPane.setSelectedIndex(index);
+                                    UiEventPublisherFactory.inMemory().publish(new FinalTextAppliedUiEvent(hint.id(), textEngine));
+                                }
                             }
-                        }
-                )
-        );
+                    );
+                }
+            }
 
-
-        return panel;
+            @Override
+            public List<Class> subscribeOn() {
+                return Arrays.asList(ExecutedWordsEngineUiEvent.class);
+            }
+        });
+        return new HintPanelEngine(hint.id(), words);
     }
 
     private class ApplyPanel extends JPanel {
-        private final RSyntaxTextArea textPane;
+        private final TextAreaPanel textAreaPanel;
 
         public ApplyPanel(String text) {
             setLayout(new BorderLayout());
-            textPane = new RSyntaxTextArea();
-            textPane.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
-            textPane.setCodeFoldingEnabled(true);
-            RTextScrollPane sp = new RTextScrollPane(textPane);
-            textPane.setText(text);
+            textAreaPanel = new TextAreaPanel(hint.id(), text, true);
+            add(textAreaPanel, BorderLayout.CENTER);
 
-            textPane.getPopupMenu().add(new JMenuItem(new AbstractAction() {
-                {
-                    putValue(Action.NAME, "Add and execute to terminal");
-                }
-
+            UiEventPublisherFactory.inMemory().register(new UiEventSubscriber() {
                 @Override
-                public void actionPerformed(ActionEvent e) {
-                    terminalPanel.setCommandAndExecute(textPane.getSelectedText());
-                }
-            }));
-
-            textPane.addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyPressed(KeyEvent e) {
-                    if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_ENTER) {
-                        terminalPanel.setCommandAndExecute(textPane.getSelectedText());
+                public void doOnEvent(UiEvent event) {
+                    FinalTextAppliedUiEvent uiEvent = (FinalTextAppliedUiEvent) event;
+                    if(uiEvent.hintId().equals(hint.id())){
+                        textAreaPanel.setText(uiEvent.text());
                     }
                 }
+
+                @Override
+                public List<Class> subscribeOn() {
+                    return Arrays.asList(FinalTextAppliedUiEvent.class);
+                }
             });
-
-            add(sp, BorderLayout.CENTER);
-        }
-
-        public void setText(String text) {
-            SwingUtilities.invokeLater(() -> textPane.setText(text));
         }
     }
 
@@ -297,7 +263,7 @@ public class HintViewPanel extends JPanel {
         @Override
         protected void done() {
             try {
-                HintViewPanel.this.finalText = get();
+                HintPanel.this.finalText = get();
                 initFinal();
             } catch (Exception e) {
                 e.printStackTrace();

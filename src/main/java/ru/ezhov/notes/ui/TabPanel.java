@@ -17,8 +17,8 @@ public class TabPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-        HintViewPanel hintViewPanel = new HintViewPanel(hintRepository, engine, hint);
+        HintPanel hintPanel = new HintPanel(hintRepository, engine, hint);
 
-        add(hintViewPanel, BorderLayout.CENTER);
+        add(hintPanel, BorderLayout.CENTER);
     }
 }

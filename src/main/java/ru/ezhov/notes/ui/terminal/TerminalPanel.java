@@ -17,7 +17,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-public class TerminalPanel extends JPanel {
+class TerminalPanel extends JPanel {
     private Process p;
     private JTerminal terminal;
     private JTextArea textArea = new TextAreaWithText("Input command...");
