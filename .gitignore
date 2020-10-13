@@ -1,6 +1,7 @@
 .idea
 test-app.iml
 target
+*.log.*
 *.log
 *.lck
 /*.iml
